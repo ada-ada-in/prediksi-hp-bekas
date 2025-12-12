@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, KeyboardAvoidingView, Platform, View } from "react-native";
+import { KeyboardAvoidingView, Platform, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
+import InputText from "../components/InputText";
+import Logo from "../components/Logo";
 import { authStyles } from "../style/Style";
 
 export default function AuthScreen() {
@@ -34,47 +36,40 @@ export default function AuthScreen() {
       style={authStyles.container}
     >
       <View style={authStyles.innerContainer}>
-        <Image 
-          source={require('../assets/images/android-icon-foreground.png')}
-          style={authStyles.logo}
-        />
+        
+        <Logo />
         
         {/* Judul Aplikasi */}
         <Text style={authStyles.title}>
           Sistem Prediksi Penjualan
         </Text>
         <Text style={authStyles.subtitle}>
-          Barang Bekas
+          Handphone Bekas
         </Text>
 
         {/* Card Form */}
         <View style={authStyles.card}>
           {/* <InputText /> */}
-          <TextInput 
-            label="Email" 
-            mode="outlined"
-            value={email}
-            autoCapitalize="none"
-            onChangeText={setEmail}
-            style={authStyles.input}
-            theme={{ colors: { primary: '#6CC24A' } }}
+          <InputText 
+          label="Email" 
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          style={authStyles.input}
           />
 
-          <TextInput
-            label="Password"
-            mode="outlined"
-            secureTextEntry={!passwordVisible}
-            right={
+          <InputText
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!passwordVisible}
+          right={
               <TextInput.Icon
                 icon={passwordVisible ? "eye-off" : "eye"}
                 onPress={() => setPasswordVisible(!passwordVisible)}
                 color="#6CC24A"
               />
             }
-            value={password}
-            onChangeText={setPassword}
-            style={authStyles.input}
-            theme={{ colors: { primary: '#6CC24A' } }}
           />
 
           <Button 

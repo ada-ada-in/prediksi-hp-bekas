@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
 import {
@@ -12,12 +13,11 @@ import {
 } from "react-native-paper";
 import { profileStyles } from "../../style/Style";
 
+
 export default function Profile() {
   const [profile, setProfile] = useState({
     name: "",
-    email: "",
-    gender: "",
-    job: ""
+    email: ""
   });
   
   const [loading, setLoading] = useState(true);
@@ -48,12 +48,10 @@ export default function Profile() {
       
       const data = await response.json();
       
-      if (response.ok) {
+      if (response.status === 200) {
         setProfile({
           name: data.data.name || "",
-          email: data.data.email || "",
-          gender: data.data.gender || "",
-          job: data.data.job || ""
+          email: data.data.email || ""
         });
       }
     } catch (error) {
@@ -67,9 +65,10 @@ export default function Profile() {
     setUpdating(true);
     try {
       const token = await AsyncStorage.getItem('token');
+      // console.log("Token:", token);
       if (!token) return;
       
-      const response = await fetch(`${process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT}/api/v1/users/me`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT}/api/v1/users`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -77,6 +76,8 @@ export default function Profile() {
         },
         body: JSON.stringify(profile)
       });
+
+      console.log(profile)
       
       if (response.ok) {
         Alert.alert("Berhasil", "Profil berhasil diperbarui!");
@@ -102,15 +103,16 @@ export default function Profile() {
       const token = await AsyncStorage.getItem('token');
       if (!token) return;
       
-      const response = await fetch(`${process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT}/api/v1/users/change-password`, {
-        method: 'POST',
+      const response = await fetch(`${process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT}/api/v1/users/me/password`, {
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          current_password: currentPassword,
-          new_password: newPassword
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+          confirmPassword: confirmPassword
         })
       });
       
@@ -119,6 +121,8 @@ export default function Profile() {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
+        AsyncStorage.removeItem('token');
+        router.replace('/auth');
       } else {
         Alert.alert("Gagal", "Gagal mengubah password");
       }
@@ -134,7 +138,7 @@ export default function Profile() {
     await AsyncStorage.removeItem('token');
     setShowLogoutDialog(false);
     // Navigasi ke halaman login
-    // navigation.replace('auth');
+    router.navigate('/auth');
   };
 
   useEffect(() => {
@@ -176,22 +180,6 @@ export default function Profile() {
           value={profile.email}
           onChangeText={(text) => setProfile({...profile, email: text})}
           keyboardType="email-address"
-          style={profileStyles.input}
-        />
-
-        <TextInput
-          label="Jenis Kelamin"
-          mode="outlined"
-          value={profile.gender}
-          onChangeText={(text) => setProfile({...profile, gender: text})}
-          style={profileStyles.input}
-        />
-
-        <TextInput
-          label="Pekerjaan"
-          mode="outlined"
-          value={profile.job}
-          onChangeText={(text) => setProfile({...profile, job: text})}
           style={profileStyles.input}
         />
 
