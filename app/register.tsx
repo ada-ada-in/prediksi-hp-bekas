@@ -74,7 +74,7 @@ export default function RegisterScreen() {
       <View style={registerStyles.innerContainer}>
         {/* Logo/Ikon Aplikasi */}
         <Image 
-          source={require('../assets/images/android-icon-foreground.png')}
+          source={require('../assets/images/images-removebg-preview.png')}
           style={registerStyles.logo}
         />
         
