@@ -44,7 +44,7 @@ export default function AuthScreen() {
           Sistem Prediksi Penjualan
         </Text>
         <Text style={authStyles.subtitle}>
-          Handphone Bekas
+          Handphone Bekas di PStore Batam
         </Text>
 
         {/* Card Form */}

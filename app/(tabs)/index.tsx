@@ -14,7 +14,6 @@ import { homeStyles } from "../../style/Style";
 
 export default function Index() {
 
-  // MANUAL INPUT (bukan modal lagi)
   const [brand, setBrand] = useState("");
   const [series, setSeries] = useState("");
   const [ramGb, setRamGb] = useState("");
@@ -29,6 +28,7 @@ export default function Index() {
   const [reasonList, setReasonList] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
+  const [showFalseResultModal, setShowFalseResultModal] = useState(false);
 
   const handlePredict = async () => {
     if (
@@ -68,13 +68,17 @@ export default function Index() {
       );
 
       const data = await response.json();
-      console.log("RESPON:", data);
 
       if (data.status === true) {
         setPredictedPrice(data.data.price);
         setLabelSold(data.data.label);
         setReasonList(data.data.reason || []);
         setShowResultModal(true);
+      } 
+
+      if (data.status === false) {
+        setReasonList(data.data.brand || []);
+        setShowFalseResultModal(true);
       }
 
     } catch (error) {
@@ -92,9 +96,9 @@ export default function Index() {
 
       {/* Header */}
       <View style={homeStyles.header}>
-        <Text style={homeStyles.headerTitle}>CekHP Bekas</Text>
+        <Text style={homeStyles.headerTitle}>Sistem Prediksi Hp Second</Text>
         <Text style={homeStyles.headerSubtitle}>
-          Estimasi harga akurat dalam hitungan detik
+          di Pstore Batam
         </Text>
       </View>
 
@@ -266,6 +270,47 @@ export default function Index() {
           mode="text"
           textColor="#999"
           onPress={() => setShowResultModal(false)}
+        >
+          Tutup
+        </Button>
+      </Modal>
+
+
+      {/* ===================== FALSE RESULT MODAL ===================== */}
+      <Modal
+        visible={showFalseResultModal}
+        onDismiss={() => setShowFalseResultModal(false)}
+        contentContainerStyle={{
+          backgroundColor: "white",
+          padding: 20,
+          marginHorizontal: 20,
+          borderRadius: 16,
+          elevation: 5
+        }}
+      >
+
+        <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
+          Gagal Prediksi!!
+        </Text>
+
+        <Text style={{ fontSize: 16, marginBottom: 10, color: "#6CC24A" }}>
+          {labelSold.toUpperCase()}
+        </Text>
+
+        <Divider style={{ marginVertical: 10 }} />
+
+        <View style={{ marginBottom: 15 }}>
+          {reasonList.map((r, i) => (
+            <Text key={i} style={{ fontSize: 14, marginBottom: 3 }}>
+              • {r}
+            </Text>
+          ))}
+        </View>
+
+        <Button
+          mode="text"
+          textColor="#999"
+          onPress={() => setShowFalseResultModal(false)}
         >
           Tutup
         </Button>
